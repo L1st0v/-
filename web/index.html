@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Мероприятие</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="screen" id="screen">
+    <p class="loader" id="loader">Загружаем...</p>
+
+    <main class="stage" id="stage" hidden>
+      <span class="pill" id="pill"></span>
+      <h1 class="title" id="title"></h1>
+      <div class="text" id="text"></div>
+      <section class="game" id="game" hidden></section>
+    </main>
+
+    <footer class="footer" id="footer" hidden>
+      <button class="action" id="action" type="button"></button>
+    </footer>
+  </div>
+  <script src="/static/game.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

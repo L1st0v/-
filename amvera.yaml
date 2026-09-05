@@ -1,0 +1,11 @@
+# Настройки для хостинга Amvera.
+meta:
+  environment: docker
+  toolchain:
+    name: docker
+
+run:
+  # Порт, который слушает приложение внутри контейнера.
+  containerPort: 80
+  # Постоянный диск. База лежит здесь и переживает перезапуски.
+  persistenceMount: /data
