@@ -1,0 +1,394 @@
+<title>Mi Cuaderno Español</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Caveat:wght@500;700&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#faf7f0;
+  --grid:rgba(40,72,120,.11);
+  --rule:rgba(40,72,120,.22);
+  --card:#fffdf8;
+  --ink:#1c2b45;
+  --soft:#5d6b84;
+  --faint:#8b97ab;
+  --red:#c03a26;
+  --amber:#cf8a1e;
+  --green:#2c7a58;
+  --shadow:0 1px 0 rgba(28,43,69,.06), 0 10px 28px -18px rgba(28,43,69,.5);
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12151c;
+    --grid:rgba(150,185,235,.07);
+    --rule:rgba(150,185,235,.16);
+    --card:#1a1e27;
+    --ink:#e9e5da;
+    --soft:#a3adbe;
+    --faint:#7a8496;
+    --red:#e3684f;
+    --amber:#e0a93f;
+    --green:#4fb489;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 14px 30px -20px #000;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12151c;
+  --grid:rgba(150,185,235,.07);
+  --rule:rgba(150,185,235,.16);
+  --card:#1a1e27;
+  --ink:#e9e5da;
+  --soft:#a3adbe;
+  --faint:#7a8496;
+  --red:#e3684f;
+  --amber:#e0a93f;
+  --green:#4fb489;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 14px 30px -20px #000;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:26px 26px;
+  color:var(--ink);
+  font-family:"Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 56px;padding-left:18px;padding-right:18px;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:"Caveat",cursive;font-size:22px;color:var(--red);letter-spacing:.02em}
+h1{font-family:"Alegreya",Georgia,serif;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;font-weight:700}
+.sub{color:var(--soft);font-size:14.5px;max-width:62ch;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font-family:inherit;font-size:14px;color:inherit;background:none;border:1px solid transparent;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.tab{padding:7px 14px;border-radius:999px;border:1px solid var(--rule);color:var(--soft);background:var(--card);transition:color .15s,border-color .15s}
+.tab[aria-selected="true"]{color:var(--card);background:var(--ink);border-color:var(--ink);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 11px;border-radius:6px;border:1px solid var(--rule);color:var(--soft);font-size:13px;background:transparent}
+.chip[aria-pressed="true"]{color:var(--red);border-color:var(--red);background:color-mix(in srgb, var(--red) 8%, transparent);font-weight:500}
+.stats{display:flex;gap:18px;flex-wrap:wrap;align-items:baseline;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding-block:10px}
+.stat{display:flex;gap:7px;align-items:baseline}
+.stat b{font-family:"Alegreya",serif;font-size:22px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;display:flex;flex-direction:column;gap:18px;min-height:280px;justify-content:center}
+.term{font-family:"Alegreya",Georgia,serif;font-size:clamp(28px,7vw,42px);line-height:1.15;text-align:center;margin:0;text-wrap:balance}
+.term.es{color:var(--ink)}
+.answer{font-family:"Caveat",cursive;font-size:clamp(26px,6vw,36px);color:var(--red);text-align:center;line-height:1.2}
+.hint{text-align:center;color:var(--faint);font-size:13px}
+.tag{display:block;text-align:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{padding:10px 18px;border-radius:9px;border:1px solid var(--rule);background:transparent;color:var(--ink);font-weight:500}
+.btn.solid{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.btn.good{border-color:var(--green);color:var(--green)}
+.btn.bad{border-color:var(--red);color:var(--red)}
+.opts{display:grid;gap:9px}
+.opt{text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--rule);background:transparent;font-size:16px;display:flex;gap:10px;align-items:baseline}
+.opt .k{font-family:"Alegreya",serif;color:var(--faint);font-size:13px;min-width:14px}
+.opt.correct{border-color:var(--green);background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);font-weight:600}
+.opt.wrong{border-color:var(--red);background:color-mix(in srgb, var(--red) 10%, transparent);color:var(--red)}
+.opt:disabled{cursor:default}
+input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--rule);background:transparent;color:var(--ink);font-family:"Alegreya",serif;font-size:20px}
+.keys{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.key{padding:6px 10px;border-radius:7px;border:1px solid var(--rule);font-family:"Alegreya",serif;font-size:16px;color:var(--soft)}
+.verdict{text-align:center;font-size:15px;min-height:24px}
+.verdict.ok{color:var(--green)}
+.verdict.no{color:var(--red)}
+.speak{border:1px solid var(--rule);border-radius:999px;width:34px;height:34px;line-height:1;color:var(--soft);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.list{display:flex;flex-direction:column;gap:0}
+.group{margin-top:18px}
+.group:first-child{margin-top:0}
+.group h2{font-family:"Alegreya",serif;font-size:16px;margin:0 0 6px;color:var(--red);letter-spacing:.02em}
+.item{display:flex;gap:12px;align-items:baseline;padding:7px 0;border-bottom:1px dashed var(--rule)}
+.item .es{font-family:"Alegreya",serif;font-size:18px;flex:1 1 46%}
+.item .ru{color:var(--soft);font-size:15px;flex:1 1 46%}
+.progress{height:5px;border-radius:999px;background:var(--rule);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+footer{color:var(--faint);font-size:12.5px;text-align:center}
+@media (max-width:420px){.item{flex-direction:column;gap:2px}.panel{padding:20px 16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">del cuaderno — из тетради</div>
+    <h1>Mi Cuaderno Español</h1>
+    <p class="sub">Тренажёр по словам из твоего конспекта: распорядок дня, дом, увлечения и времена года — все четыре, включая те, которых не хватало.</p>
+  </header>
+
+  <div class="bar" role="tablist" aria-label="Режимы">
+    <button class="tab" role="tab" id="tab-cards" aria-selected="true" data-mode="cards">Карточки</button>
+    <button class="tab" role="tab" id="tab-choice" aria-selected="false" data-mode="choice">Выбор перевода</button>
+    <button class="tab" role="tab" id="tab-write" aria-selected="false" data-mode="write">Письмо</button>
+    <button class="tab" role="tab" id="tab-list" aria-selected="false" data-mode="list">Словарь</button>
+  </div>
+
+  <div class="chips" id="chips" aria-label="Темы"></div>
+
+  <div class="stats">
+    <div class="stat"><b id="s-done">0</b><span>отвечено</span></div>
+    <div class="stat"><b id="s-right">0</b><span>верно</span></div>
+    <div class="stat"><b id="s-streak">0</b><span>подряд</span></div>
+    <div class="stat"><b id="s-learned">0</b><span>выучено из <span id="s-total">0</span></span></div>
+  </div>
+  <div class="progress"><i id="bar"></i></div>
+
+  <main class="panel" id="panel"></main>
+
+  <footer>Enter — проверить · Пробел — перевернуть карточку · 1–4 — выбрать вариант · Прогресс сохраняется в браузере</footer>
+</div>
+
+<script>
+const WORDS = [
+  ["Rutina diaria · Распорядок дня", [
+    ["me despierto","просыпаюсь"],
+    ["me levanto enseguida","сразу встаю"],
+    ["me lavo","моюсь"],
+    ["me visto","одеваюсь"],
+    ["desayuno","завтракаю"],
+    ["luego","потом"],
+    ["después","после, потом"],
+    ["descanso","отдыхаю"],
+    ["la cena","ужин"],
+    ["me acuesto","ложусь спать"],
+    ["tarde","поздно"],
+    ["todos los días","каждый день"],
+    ["mucho tiempo","много времени"]
+  ]],
+  ["En casa · Дома", [
+    ["muy grande","очень большая"],
+    ["cómoda","удобная, комфортная"],
+    ["la ventana","окно"],
+    ["la mesa","стол"],
+    ["el ordenador","компьютер"],
+    ["debajo","под"],
+    ["encima","сверху, на"],
+    ["aquí","тут, здесь"],
+    ["tranquila","спокойная, тихо"],
+    ["bonito","красиво"]
+  ]],
+  ["Aficiones · Увлечения", [
+    ["las aficiones","увлечения, хобби"],
+    ["prefiero","предпочитаю"],
+    ["porque","потому что"],
+    ["por eso","поэтому"],
+    ["creo que","думаю, что"],
+    ["nos divertimos","мы веселимся"],
+    ["me aburro","мне скучно"],
+    ["olvido","забываю"],
+    ["fuerzas nuevas","новые силы"],
+    ["el libro","книга"],
+    ["la canción","песня"],
+    ["especialmente","особенно"],
+    ["también","тоже, также"],
+    ["solo","один; только"],
+    ["la gente","люди"],
+    ["he pasado","я провёл (время)"]
+  ]],
+  ["Las estaciones · Времена года", [
+    ["las estaciones del año","времена года"],
+    ["la primavera","весна"],
+    ["el verano","лето"],
+    ["el otoño","осень"],
+    ["el invierno","зима"],
+    ["en primavera","весной"],
+    ["en verano","летом"],
+    ["en otoño","осенью"],
+    ["en invierno","зимой"],
+    ["del año","в году"]
+  ]]
+];
+
+const DECK = [];
+WORDS.forEach(([group, items]) => items.forEach(([es, ru]) => DECK.push({ es, ru, group, id: es })));
+
+const KEY = "cuaderno-es-v1";
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { saved = {}; }
+const learned = new Set(Array.isArray(saved.learned) ? saved.learned : []);
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({ learned: [...learned] })); } catch (e) {} }
+
+const state = { mode: "cards", group: "all", done: 0, right: 0, streak: 0, current: null, flipped: false, answered: false };
+const panel = document.getElementById("panel");
+const groups = WORDS.map(w => w[0]);
+
+const chips = document.getElementById("chips");
+chips.innerHTML = "";
+[["all","Все слова"], ...groups.map(g => [g, g.split(" · ")[1]])].forEach(([val, label]) => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = label; b.dataset.group = val;
+  b.setAttribute("aria-pressed", val === "all");
+  b.onclick = () => { state.group = val; [...chips.children].forEach(c => c.setAttribute("aria-pressed", c.dataset.group === val)); render(); };
+  chips.appendChild(b);
+});
+
+function pool(){ return state.group === "all" ? DECK : DECK.filter(w => w.group === state.group); }
+function pick(){
+  const p = pool();
+  const fresh = p.filter(w => !learned.has(w.id) && w.id !== (state.current && state.current.id));
+  const src = fresh.length ? fresh : p.filter(w => w.id !== (state.current && state.current.id));
+  return (src.length ? src : p)[Math.floor(Math.random() * (src.length ? src.length : p.length))];
+}
+function norm(s){
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[¿?¡!.,]/g, "").replace(/\s+/g, " ").trim();
+}
+function speak(text){
+  try {
+    const u = new SpeechSynthesisUtterance(text.replace(/^(el|la|las|los) /, ""));
+    u.lang = "es-ES"; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch (e) {}
+}
+function stats(){
+  document.getElementById("s-done").textContent = state.done;
+  document.getElementById("s-right").textContent = state.right;
+  document.getElementById("s-streak").textContent = state.streak;
+  document.getElementById("s-learned").textContent = learned.size;
+  document.getElementById("s-total").textContent = DECK.length;
+  document.getElementById("bar").style.width = (learned.size / DECK.length * 100) + "%";
+}
+function score(ok){
+  state.done++; if (ok){ state.right++; state.streak++; } else state.streak = 0;
+  stats();
+}
+function speakBtn(text){
+  const b = document.createElement("button");
+  b.className = "speak"; b.title = "Послушать"; b.setAttribute("aria-label", "Послушать: " + text);
+  b.textContent = "♪"; b.onclick = () => speak(text);
+  return b;
+}
+
+function render(){
+  panel.innerHTML = "";
+  if (state.mode === "list") return renderList();
+  state.current = pick(); state.flipped = false; state.answered = false;
+  if (state.mode === "cards") renderCard();
+  if (state.mode === "choice") renderChoice();
+  if (state.mode === "write") renderWrite();
+}
+
+function renderCard(){
+  const w = state.current;
+  const tag = document.createElement("div"); tag.className = "tag"; tag.textContent = w.group.split(" · ")[0];
+  const term = document.createElement("p"); term.className = "term es"; term.textContent = w.es;
+  const sp = document.createElement("div"); sp.className = "row"; sp.appendChild(speakBtn(w.es));
+  const ans = document.createElement("div"); ans.className = "answer"; ans.textContent = "•  •  •";
+  const hint = document.createElement("div"); hint.className = "hint"; hint.textContent = "Нажми «Перевернуть» или пробел";
+  const row = document.createElement("div"); row.className = "row";
+  const flip = document.createElement("button"); flip.className = "btn solid"; flip.textContent = "Перевернуть";
+  flip.onclick = () => {
+    if (state.flipped) return;
+    state.flipped = true; ans.textContent = w.ru; hint.textContent = "Вспомнил?";
+    row.innerHTML = "";
+    const no = document.createElement("button"); no.className = "btn bad"; no.textContent = "Ещё учить";
+    no.onclick = () => { learned.delete(w.id); save(); score(false); render(); };
+    const yes = document.createElement("button"); yes.className = "btn good"; yes.textContent = "Знаю";
+    yes.onclick = () => { learned.add(w.id); save(); score(true); render(); };
+    row.append(no, yes);
+  };
+  row.appendChild(flip);
+  panel.append(tag, term, sp, ans, hint, row);
+}
+
+function renderChoice(){
+  const w = state.current;
+  const others = DECK.filter(x => x.id !== w.id).sort(() => Math.random() - .5).slice(0, 3);
+  const opts = [w, ...others].sort(() => Math.random() - .5);
+  const tag = document.createElement("div"); tag.className = "tag"; tag.textContent = "Как переводится?";
+  const term = document.createElement("p"); term.className = "term es"; term.textContent = w.es;
+  const sp = document.createElement("div"); sp.className = "row"; sp.appendChild(speakBtn(w.es));
+  const box = document.createElement("div"); box.className = "opts";
+  opts.forEach((o, i) => {
+    const b = document.createElement("button"); b.className = "opt";
+    b.innerHTML = '<span class="k">' + (i + 1) + '</span>';
+    b.appendChild(document.createTextNode(o.ru));
+    b.dataset.i = i;
+    b.onclick = () => {
+      if (state.answered) return; state.answered = true;
+      const ok = o.id === w.id;
+      [...box.children].forEach(c => { c.disabled = true; });
+      b.classList.add(ok ? "correct" : "wrong");
+      if (!ok) box.children[opts.indexOf(w)].classList.add("correct");
+      if (ok) learned.add(w.id); else learned.delete(w.id);
+      save(); score(ok); speak(w.es);
+      setTimeout(render, ok ? 650 : 1500);
+    };
+    box.appendChild(b);
+  });
+  panel.append(tag, term, sp, box);
+}
+
+function renderWrite(){
+  const w = state.current;
+  const tag = document.createElement("div"); tag.className = "tag"; tag.textContent = "Напиши по-испански";
+  const term = document.createElement("p"); term.className = "term"; term.textContent = w.ru;
+  const inp = document.createElement("input"); inp.type = "text"; inp.id = "write-input";
+  inp.placeholder = "escribe aquí…"; inp.autocapitalize = "off"; inp.autocomplete = "off"; inp.spellcheck = false;
+  const keys = document.createElement("div"); keys.className = "keys";
+  "áéíóúñ¿¡".split("").forEach(ch => {
+    const k = document.createElement("button"); k.className = "key"; k.textContent = ch; k.type = "button";
+    k.onclick = () => { inp.value += ch; inp.focus(); };
+    keys.appendChild(k);
+  });
+  const verdict = document.createElement("div"); verdict.className = "verdict";
+  const row = document.createElement("div"); row.className = "row";
+  const check = document.createElement("button"); check.className = "btn solid"; check.textContent = "Проверить";
+  const skip = document.createElement("button"); skip.className = "btn"; skip.textContent = "Показать ответ";
+  function finish(ok){
+    state.answered = true; score(ok); speak(w.es);
+    verdict.className = "verdict " + (ok ? "ok" : "no");
+    verdict.textContent = ok ? "¡Correcto! — " + w.es : "Правильно: " + w.es;
+    if (ok) learned.add(w.id); else learned.delete(w.id);
+    save();
+    row.innerHTML = "";
+    const next = document.createElement("button"); next.className = "btn solid"; next.textContent = "Дальше →";
+    next.onclick = render; row.appendChild(next); next.focus();
+  }
+  check.onclick = () => { if (!state.answered) finish(norm(inp.value) === norm(w.es)); };
+  skip.onclick = () => { if (!state.answered) finish(false); };
+  inp.onkeydown = e => { if (e.key === "Enter"){ e.preventDefault(); check.onclick(); } };
+  row.append(skip, check);
+  panel.append(tag, term, inp, keys, verdict, row);
+  inp.focus();
+}
+
+function renderList(){
+  panel.style.justifyContent = "flex-start";
+  const list = document.createElement("div"); list.className = "list";
+  WORDS.forEach(([group, items]) => {
+    if (state.group !== "all" && state.group !== group) return;
+    const g = document.createElement("section"); g.className = "group";
+    const h = document.createElement("h2"); h.textContent = group; g.appendChild(h);
+    items.forEach(([es, ru]) => {
+      const it = document.createElement("div"); it.className = "item";
+      const a = document.createElement("div"); a.className = "es"; a.textContent = es;
+      const b = document.createElement("div"); b.className = "ru"; b.textContent = ru;
+      it.append(a, b, speakBtn(es)); g.appendChild(it);
+    });
+    list.appendChild(g);
+  });
+  panel.appendChild(list);
+}
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.onclick = () => {
+    state.mode = t.dataset.mode;
+    document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === t));
+    panel.style.justifyContent = state.mode === "list" ? "flex-start" : "center";
+    render();
+  };
+});
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if (state.mode === "cards" && e.code === "Space"){ e.preventDefault(); const b = panel.querySelector(".btn.solid"); if (b) b.click(); }
+  if (state.mode === "choice" && /^[1-4]$/.test(e.key)){ const b = panel.querySelector('.opt[data-i="' + (+e.key - 1) + '"]'); if (b) b.click(); }
+  if (e.key === "Enter" && state.mode === "cards"){ const b = panel.querySelector(".btn.good"); if (b) b.click(); }
+});
+
+stats();
+render();
+</script>
