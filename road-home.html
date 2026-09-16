@@ -75,7 +75,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0b0d14;
 @keyframes bl{0%,100%{opacity:.18}50%{opacity:.65}}
 
 /* ---------- заставка ---------- */
-#menu{position:absolute;top:0;left:0;right:0;bottom:0;inset:0;display:flex;flex-direction:column;
+#menu{position:absolute;top:0;left:0;right:0;bottom:0;inset:0;z-index:10;display:flex;flex-direction:column;
   align-items:center;justify-content:flex-start;gap:14px;padding:11vh 28px 28px;text-align:center;color:#fff;
   background:linear-gradient(180deg,rgba(9,11,20,.93) 0%,rgba(9,11,20,.8) 40%,
                                     rgba(9,11,20,.2) 68%,rgba(9,11,20,.04) 100%)}
@@ -90,13 +90,26 @@ h1{font-size:34px;font-weight:800;letter-spacing:-.02em;text-shadow:0 6px 24px r
   background:linear-gradient(180deg,#ffd1dd,#e85678);box-shadow:0 12px 32px rgba(232,86,120,.4)}
 #go:active{transform:scale(.96)}
 
-#crash{position:absolute;top:0;left:0;right:0;bottom:0;inset:0;display:none;align-items:center;justify-content:center;
+#crash{position:absolute;top:0;left:0;right:0;bottom:0;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
   background:#000;color:#4cf08a;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;
   white-space:pre-wrap;line-height:1.6;text-align:center;padding:20px}
 #crash.on{display:flex}
+
+/* видно только если в браузере выключен JavaScript */
+#nojs{position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:32px 26px;text-align:center;color:#fff;background:#11131c}
+#nojs h2{font-size:22px;font-weight:800}
+#nojs p{max-width:330px;font-size:14px;line-height:1.6;opacity:.85}
+#nojs b{color:#ffb9cc}
 </style>
 </head>
 <body>
+<noscript><div id="nojs">
+  <h2>Нужен обычный браузер</h2>
+  <p>Похоже, файл открыт во встроенном просмотрщике мессенджера — в нём выключены скрипты, поэтому игра не запускается.</p>
+  <p><b>Что сделать:</b> нажми «Поделиться» → «Сохранить в Файлы», потом открой файл из «Файлов» — он откроется в Safari и заработает.</p>
+</div></noscript>
 <canvas id="c"></canvas>
 
 <div id="hud">
@@ -151,12 +164,15 @@ h1{font-size:34px;font-weight:800;letter-spacing:-.02em;text-shadow:0 6px 24px r
 
 // Если игра почему-то не заведётся, человек должен увидеть причину,
 // а не молча тыкать в кнопку. Ставим перехватчик самым первым.
+const BUILD = 'город-1';
 function fail(msg){
   try {
+    const m = document.getElementById('menu');
+    if (m) m.className = 'off';              // иначе заставка накрывает сообщение
     const box = document.getElementById('crash');
     box.className = 'on';
     box.style.fontSize = '13px';
-    box.textContent = 'Игра не запустилась 😕\n\n' + msg +
+    box.textContent = 'Игра не запустилась 😕\n\nсборка ' + BUILD + '\n' + msg +
       '\n\nПокажи это сообщение тому, кто её собирал.';
   } catch (e) {}
 }
@@ -2088,8 +2104,10 @@ function driftScore(dt){
   }
 }
 
+let framesDrawn = 0;
 function frame(ts){
   requestAnimationFrame(frame);
+  framesDrawn++;
   if (!last) last = ts;
   let dt = (ts - last) / 1000;
   last = ts;
@@ -2195,6 +2213,12 @@ for (let i = 0; i < startTargets.length; i++){
   el.addEventListener('touchend', startGame);
   el.addEventListener('pointerup', startGame);
 }
+
+setTimeout(function(){
+  if (framesDrawn === 0) fail('Холст не ожил: ни одного кадра за 3 секунды.\n' +
+    'canvas=' + (!!cvs) + ' ctx=' + (!!ctx) + ' размер=' + W + 'x' + H +
+    ' граней=' + statics.length);
+}, 3000);
 
 try {
   buildCity();
