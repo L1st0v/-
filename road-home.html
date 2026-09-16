@@ -811,11 +811,12 @@ function placeHouse(){
             sideX: sx, sideZ: sz, fwdX: fx, fwdZ: fz };
 
   // расчищаем место: сносим то, что оказалось на участке
-  builds = builds.filter(b => Math.hypot(b.x-hx, b.z-hz) > 34);
+  const CLEAR = 42;                       // дому нужен свой участок
+  builds = builds.filter(b => Math.hypot(b.x-hx, b.z-hz) > CLEAR);
   for (let k = 0; k < blockBld.length; k++)
-    blockBld[k] = blockBld[k].filter(b => Math.hypot(b.x-hx, b.z-hz) > 34);
-  props = props.filter(p => Math.hypot(p.x-hx, p.z-hz) > 20);
-  statics = statics.filter(f => f.bx === undefined || Math.hypot(f.bx-hx, f.bz-hz) > 34);
+    blockBld[k] = blockBld[k].filter(b => Math.hypot(b.x-hx, b.z-hz) > CLEAR);
+  props = props.filter(p => Math.hypot(p.x-hx, p.z-hz) > 22);
+  statics = statics.filter(f => f.bx === undefined || Math.hypot(f.bx-hx, f.bz-hz) > CLEAR);
   buildHouse(hx, hz, hyaw);
 }
 
@@ -1849,9 +1850,10 @@ function setupCine(){
   cine.x  = car.x - fx*12 - sx*3.2;
   cine.y  = 4.4;
   cine.z  = car.z - fz*12 - sz*3.2;
-  cine.lx = car.x + fx*4.5 + sx*3.2;
-  cine.ly = 1.0;
-  cine.lz = car.z + fz*4.5 + sz*3.2;
+  // смотрим между машиной и крыльцом, чтобы дом целиком попал в кадр
+  cine.lx = car.x + (house.doorX - car.x) * 0.42 + fx*2.5;
+  cine.ly = 1.2;
+  cine.lz = car.z + (house.doorZ - car.z) * 0.42 + fz*2.5;
   camMode = 'cine';
 }
 
