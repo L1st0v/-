@@ -11,7 +11,7 @@
 html,body{width:100%;height:100%;overflow:hidden;background:#0b0d14;
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
   -webkit-user-select:none;user-select:none;touch-action:none;overscroll-behavior:none}
-#c{display:block;position:absolute;inset:0}
+#c{display:block;position:absolute;top:0;left:0;right:0;bottom:0;inset:0}
 
 /* ---------- худ ---------- */
 #hud{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top) + 12px) 14px 0;
@@ -25,7 +25,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0b0d14;
 .val small{font-size:11px;font-weight:600;opacity:.6;margin-left:2px}
 
 /* ---------- управление ---------- */
-#pad{position:absolute;inset:auto 0 0 0;padding:0 16px calc(env(safe-area-inset-bottom) + 16px);
+#pad{position:absolute;left:0;right:0;bottom:0;inset:auto 0 0 0;padding:0 16px calc(env(safe-area-inset-bottom) + 16px);
   display:flex;justify-content:space-between;align-items:flex-end;opacity:0;transition:opacity .4s;pointer-events:none}
 #pad.on{opacity:1;pointer-events:auto}
 .grp{display:flex;gap:12px}
@@ -51,7 +51,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0b0d14;
 @keyframes bl{0%,100%{opacity:.18}50%{opacity:.65}}
 
 /* ---------- заставка ---------- */
-#menu{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+#menu{position:absolute;top:0;left:0;right:0;bottom:0;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   gap:16px;padding:12vh 28px 28px;text-align:center;color:#fff;
   background:linear-gradient(180deg,rgba(9,11,20,.92) 0%,rgba(9,11,20,.8) 38%,
                                     rgba(9,11,20,.22) 66%,rgba(9,11,20,.05) 100%)}
@@ -64,9 +64,9 @@ h1{font-size:34px;font-weight:800;letter-spacing:-.02em;text-shadow:0 6px 24px r
 #go:active{transform:scale(.96)}
 #tip{font-size:12px;opacity:.6;margin-top:2px;text-shadow:0 2px 8px rgba(0,0,0,.8)}
 
-#crash{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+#crash{position:absolute;top:0;left:0;right:0;bottom:0;inset:0;display:none;align-items:center;justify-content:center;
   background:#000;color:#4cf08a;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;
-  white-space:pre;line-height:1.6;text-align:center;padding:20px}
+  white-space:pre-wrap;line-height:1.6;text-align:center;padding:20px}
 #crash.on{display:flex}
 </style>
 </head>
@@ -107,6 +107,21 @@ h1{font-size:34px;font-weight:800;letter-spacing:-.02em;text-shadow:0 6px 24px r
 <script>
 'use strict';
 
+// Если игра почему-то не заведётся, человек должен увидеть причину,
+// а не молча тыкать в кнопку. Ставим перехватчик самым первым.
+function fail(msg){
+  try {
+    const box = document.getElementById('crash');
+    box.className = 'on';
+    box.style.fontSize = '13px';
+    box.textContent = 'Игра не запустилась 😕\n\n' + msg +
+      '\n\nПокажи это сообщение тому, кто её собирал.';
+  } catch (e) {}
+}
+window.addEventListener('error', function(e){
+  fail((e.message || 'неизвестная ошибка') + '\n' + (e.filename || '') + ':' + (e.lineno || '?'));
+});
+
 /* =====================================================================
    Крошечный софтверный 3D-рендер на обычном canvas 2d.
    Никаких библиотек: грани сортируются по глубине и заливаются
@@ -123,8 +138,9 @@ let W = 1, H = 1, DPR = 1, FL = 500;
 
 function resize(){
   DPR = Math.min(window.devicePixelRatio || 1, 2);
-  W = Math.round(window.innerWidth);
-  H = Math.round(window.innerHeight);
+  const de = document.documentElement;
+  W = Math.round(window.innerWidth  || de.clientWidth  || 360);
+  H = Math.round(window.innerHeight || de.clientHeight || 640);
   cvs.style.width = W + 'px';
   cvs.style.height = H + 'px';
   cvs.width  = Math.round(W * DPR);
@@ -1234,24 +1250,46 @@ function frame(ts){
 }
 
 /* ----------------------------- запуск ----------------------------- */
-buildWorld();
-for (let i = 0; i < statics.length; i++){
-  const f = statics[i];
-  let sx = 0, sz = 0;
-  for (let j = 0; j < f.v.length; j++){ sx += f.v[j][0]; sz += f.v[j][2]; }
-  f.cx = sx / f.v.length; f.cz = sz / f.v.length;
-  if (f.l === undefined) f.l = 3;
-}
-car.x = route[0][0]; car.z = route[0][1];
-car.yaw = Math.atan2(route[1][0]-route[0][0], route[1][1]-route[0][1]);
-camPrep();
-requestAnimationFrame(frame);
 
-document.getElementById('go').addEventListener('click', () => {
+// Кнопка «Поехали» подключается до создания мира: даже если построение
+// мира упадёт, нажатие хотя бы не будет проваливаться в пустоту.
+let started = false;
+function startGame(ev){
+  if (ev && ev.cancelable) ev.preventDefault();
+  if (started) return;
+  started = true;
   audioStart();
   menu.classList.add('off');
   resetGame();
-});
+}
+// Разные браузеры доставляют тап по-разному, поэтому слушаем всё сразу
+// (повторные срабатывания отсекает флаг started). Нажатие засчитывается
+// по всей заставке, а не только по самой кнопке.
+const startTargets = [document.getElementById('go'), menu];
+for (let i = 0; i < startTargets.length; i++){
+  const el = startTargets[i];
+  if (!el) continue;
+  el.addEventListener('click', startGame);
+  el.addEventListener('touchend', startGame);
+  el.addEventListener('pointerup', startGame);
+}
+
+try {
+  buildWorld();
+  for (let i = 0; i < statics.length; i++){
+    const f = statics[i];
+    let sx = 0, sz = 0;
+    for (let j = 0; j < f.v.length; j++){ sx += f.v[j][0]; sz += f.v[j][2]; }
+    f.cx = sx / f.v.length; f.cz = sz / f.v.length;
+    if (f.l === undefined) f.l = 3;
+  }
+  car.x = route[0][0]; car.z = route[0][1];
+  car.yaw = Math.atan2(route[1][0]-route[0][0], route[1][1]-route[0][1]);
+  camPrep();
+  requestAnimationFrame(frame);
+} catch (err) {
+  fail(err && err.message ? err.message : String(err));
+}
 </script>
 </body>
 </html>
